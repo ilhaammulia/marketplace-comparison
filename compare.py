@@ -41,5 +41,5 @@ class Search:
                 print(name, price)
 
 
-Search("lenovo legion 5", 10)
+Search("Macbook Air 2020", 10)
     
