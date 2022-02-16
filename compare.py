@@ -7,7 +7,7 @@ class Search:
         self.max_page = int(max_page)
         self.query = str(query).lower()
         self.url = f"https://iprice.co.id/search/?term={self.query.replace(' ', '%20')}"
-        self.request()
+        self.result = []
     
     def request(self):
         head = {
@@ -25,7 +25,9 @@ class Search:
                     soup = BeautifulSoup(req.text, 'html.parser')
                     if soup.find_all('div', attrs={'class': 'pu kF oT cM iq iU iV uu'}) != None:
                         cards = soup.find_all('div', attrs={'class': 'pu kF oT cM iq iU iV uu'})
-                        self.parse(cards)
+                        response = self.parse(cards)
+                        if response != None:
+                            self.result.append(response)
                     else:
                         self.request(self)
                     base_page = base_page + 1
@@ -38,8 +40,14 @@ class Search:
             if item.find('span', attrs={'class': 'truncate-2'}) != None and item.find('span', attrs={'class': 'hF b p bQ a-'}) != None:
                 name = item.find('span', attrs={'class': 'truncate-2'}).get_text()
                 price = item.find('span', attrs={'class': 'hF b p bQ a-'}).get_text()
-                print(name, price)
+                result = {'name': name, 'price': price}
+            else:
+                result = None
+            return result
+    def get(self):
+        self.request()
+        return self.result
+                
 
 
-Search("Macbook Air 2020", 10)
     
